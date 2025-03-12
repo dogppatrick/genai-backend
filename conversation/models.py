@@ -120,5 +120,11 @@ class AIResponse(BaseModel):
             self.error_message = error_msg
         self.save(update_fields=["status", "error_message", "retry_count"])
 
+    def get_input_token(self):
+        """
+        TODO get history message in the conversions
+        """
+        return ""
+
     def __str__(self):
         return f"Response to Message {self.message.id}: {self.response_content[:50]}"

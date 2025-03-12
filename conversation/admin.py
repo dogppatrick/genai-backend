@@ -21,6 +21,9 @@ class ConversationAdmin(admin.ModelAdmin):
     ordering = ("-created_at",)
     inlines = [MessageInline]
 
+    def get_queryset(self, request):
+        return Conversation.all_objects.all()
+
 
 @admin.register(Message)
 class MessageAdmin(admin.ModelAdmin):
