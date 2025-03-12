@@ -85,10 +85,7 @@ THIRD_PARTY_APPS = [
     "drf_spectacular",
 ]
 
-LOCAL_APPS = [
-    "genaibackend.users",
-    # Your stuff: custom apps go here
-]
+LOCAL_APPS = ["genaibackend.users", "conversation"]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
