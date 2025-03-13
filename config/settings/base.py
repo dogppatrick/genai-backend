@@ -5,6 +5,7 @@ import ssl
 from pathlib import Path
 
 import environ
+import sentry_sdk
 
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 # genaibackend/
@@ -350,3 +351,8 @@ SPECTACULAR_SETTINGS = {
     "SERVE_PERMISSIONS": ["rest_framework.permissions.IsAdminUser"],
     "SCHEMA_PATH_PREFIX": "/api/",
 }
+
+
+sentry_sdk.init(
+    send_default_pii=True,
+)
