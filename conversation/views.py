@@ -27,6 +27,7 @@ class StandardResultsSetPagination(PageNumberPagination):
 class ConversationViewSet(viewsets.ModelViewSet):
     serializer_class = ConversationSerializer
     pagination_class = StandardResultsSetPagination
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
@@ -79,6 +80,7 @@ class MessageViewSet(
     mixins.RetrieveModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet
 ):
     serializer_class = MessageSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         return Message.objects.filter(conversation__user=self.request.user)
