@@ -16,7 +16,7 @@ class Conversation(BaseModel):
         (STATUS_ACTIVATE, "Active"),
         (STATUS_DELETE, "Deleted"),
     ]
-    title = models.CharField(max_length=255, blank=True)
+    title = models.CharField(max_length=255, blank=True, null=True)
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="conversations"
     )
@@ -113,7 +113,7 @@ class AIResponse(BaseModel):
 
     def mark_failed(self, error_msg):
         self.retry_count += 1
-        if self.retry_count < self.max_retries:
+        if self.retry_count < 3:
             self.status = self.STATUS_GENERATING
         else:
             self.status = self.STATUS_ERROR
@@ -121,10 +121,13 @@ class AIResponse(BaseModel):
         self.save(update_fields=["status", "error_message", "retry_count"])
 
     def get_input_token(self):
-        """
-        TODO get history message in the conversions
-        """
-        return ""
+        messages = "".join(
+            [
+                m.content
+                for m in Message.objects.filter(conversation=self.message.conversation)
+            ]
+        )
+        return messages
 
     def __str__(self):
         return f"Response to Message {self.message.id}: {self.response_content[:50]}"

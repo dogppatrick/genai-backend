@@ -29,20 +29,22 @@ class MessageSerializer(serializers.ModelSerializer):
         ]
 
 
-class AddMessageSerializer(serializers.ModelSerializer):
-    content = serializers.CharField(required=True, max_length=1000, help_text="The content of the message to add.")
-
-
 class ConversationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Conversation
         fields = [
             "id",
             "title",
+            "user",
             "status",
             "model_version",
         ]
-        read_only_fields = ["id", "created_at", "updated_at"]
+        read_only_fields = [
+            "id",
+            "user",
+            "created_at",
+            "updated_at",
+        ]
 
 
 class ConversationDetailSerializer(serializers.ModelSerializer):
@@ -61,3 +63,16 @@ class ConversationDetailSerializer(serializers.ModelSerializer):
             "messages",
         ]
         read_only_fields = ["id", "created_at", "updated_at", "messages"]
+
+
+class AddMessageSerializer(serializers.Serializer):
+    content = serializers.CharField(
+        required=True, max_length=1000, help_text="The content of the message to add."
+    )
+
+
+class StartConversationSerializer(serializers.Serializer):
+    content = serializers.CharField(
+        required=True, max_length=1000, help_text="The content of the message to add."
+    )
+    model_version = serializers.CharField(help_text="user model", allow_blank=True)

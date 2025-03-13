@@ -1,7 +1,14 @@
 import secrets
+import string
 
 
-class AImodel:
+def generate_random_string(length):
+    return "".join(
+        secrets.choice(string.ascii_letters + string.digits) for _ in range(length)
+    )
+
+
+class FakeAImodel:
     STATUS_SUCCESS = "success"
     STATUS_FAIL = "fail"
 
@@ -19,3 +26,6 @@ class AImodel:
     def similator_ai_response(self, input_token: str):
         f = secrets.choice([self.create_resposne, self.ai_response_error])
         return f(input_token)
+
+    def create_title(self, input_token: str):
+        return generate_random_string(20)

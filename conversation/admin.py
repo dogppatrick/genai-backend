@@ -5,17 +5,12 @@ from .models import AIResponse, Conversation, Message
 
 class MessageInline(admin.TabularInline):
     model = Message
-    extra = 1
-
-
-class AIResponseInline(admin.TabularInline):
-    model = AIResponse
-    extra = 1
+    extra = 0
 
 
 @admin.register(Conversation)
 class ConversationAdmin(admin.ModelAdmin):
-    list_display = ("title", "user", "status", "model_version")
+    list_display = ("id", "title", "user", "status", "model_version")
     list_filter = ("status", "model_version")
     search_fields = ("title", "user__username")
     ordering = ("-created_at",)
@@ -28,13 +23,12 @@ class ConversationAdmin(admin.ModelAdmin):
 @admin.register(Message)
 class MessageAdmin(admin.ModelAdmin):
     list_display = (
+        "id",
         "conversation",
         "sender",
         "content_preview",
+        "get_status",
         "timestamp",
-        "order",
-        "is_edited",
-        "is_deleted",
     )
     list_filter = ("sender", "is_edited", "is_deleted")
     search_fields = ("conversation__title", "content")
@@ -43,7 +37,11 @@ class MessageAdmin(admin.ModelAdmin):
     def content_preview(self, obj):
         return f"{obj.content[:50]}..."
 
+    def get_status(self, obj: Message):
+        return obj.get_status()
+
     content_preview.short_description = "Content Preview"
+    get_status.short_description = "status"
 
 
 @admin.register(AIResponse)
