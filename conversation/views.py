@@ -8,11 +8,16 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from common.utils import set_default_log
+from genaibackend.users.authentication import JWTAuthentication
 
 from .models import Conversation, Message
-from .serializers import (AddMessageSerializer, ConversationDetailSerializer,
-                          ConversationSerializer, MessageSerializer,
-                          StartConversationSerializer)
+from .serializers import (
+    AddMessageSerializer,
+    ConversationDetailSerializer,
+    ConversationSerializer,
+    MessageSerializer,
+    StartConversationSerializer,
+)
 from .tasks import auto_title, response_ai
 
 logger = set_default_log()
@@ -157,6 +162,7 @@ class StartConversationAPIView(APIView):
 
 
 class AddMessageAPIView(APIView):
+    authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     @extend_schema(

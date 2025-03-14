@@ -5,6 +5,7 @@ import ssl
 from pathlib import Path
 
 import environ
+import sentry_sdk
 
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 # genaibackend/
@@ -333,6 +334,7 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework.authentication.SessionAuthentication",
         "rest_framework.authentication.TokenAuthentication",
+        "genaibackend.users.authentication.JWTAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
@@ -349,4 +351,15 @@ SPECTACULAR_SETTINGS = {
     "VERSION": "1.0.0",
     "SERVE_PERMISSIONS": ["rest_framework.permissions.IsAdminUser"],
     "SCHEMA_PATH_PREFIX": "/api/",
+    "EXTENSIONS": [
+        "genaibackend.users.authentication.JWTBearerAuthenticationScheme",
+    ],
 }
+
+
+sentry_sdk.init(
+    send_default_pii=True,
+)
+
+# JWT
+JWT_SECRET_KEY = env("JWT_SECRET_KEY")
