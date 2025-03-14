@@ -34,6 +34,7 @@ psycopg2-binary = "^2.9.10"
 pyjwt = "^2.10.1"
 pytest = "^8.3.5"
 pytest-django = "^4.10.0"
+pytest-mock = "^3.14.0"
 redis = "^5.2.1"
 sentry-sdk = {extras = ["django"], version = "^2.22.0"}
 whitenoise = "^6.9.0"
