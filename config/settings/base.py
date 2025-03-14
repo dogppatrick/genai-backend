@@ -351,7 +351,12 @@ SPECTACULAR_SETTINGS = {
     "VERSION": "1.0.0",
     "SERVE_PERMISSIONS": ["rest_framework.permissions.IsAdminUser"],
     "SCHEMA_PATH_PREFIX": "/api/",
+    "EXTENSIONS": [
+        "genaibackend.users.authentication.JWTBearerAuthenticationScheme",
+    ],
 }
+
+
 sentry_sdk.init(
     send_default_pii=True,
 )

@@ -5,7 +5,7 @@ from django.db.models import QuerySet
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import DetailView, RedirectView, UpdateView
-from drf_spectacular.utils import OpenApiResponse, extend_schema
+from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView

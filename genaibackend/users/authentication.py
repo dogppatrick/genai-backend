@@ -1,9 +1,14 @@
 import jwt
 from django.conf import settings
+from drf_spectacular.extensions import OpenApiAuthenticationExtension
 from rest_framework.authentication import BaseAuthentication
 from rest_framework.exceptions import AuthenticationFailed
 
+from common.utils import set_default_log
+
 from .models import User
+
+logger = set_default_log()
 
 
 class JWTAuthentication(BaseAuthentication):
@@ -14,6 +19,7 @@ class JWTAuthentication(BaseAuthentication):
             return None
 
         parts = auth_header.split()
+        logger.info(f"parts: {parts}")
 
         if len(parts) != 2 or parts[0].lower() != "bearer":
             raise AuthenticationFailed("Authorization header must be Bearer token")
@@ -21,7 +27,7 @@ class JWTAuthentication(BaseAuthentication):
         token = parts[1]
 
         try:
-            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
+            payload = jwt.decode(token, settings.JWT_SECRET_KEY, algorithms=["HS256"])
         except jwt.ExpiredSignatureError:
             raise AuthenticationFailed("Token has expired")
         except jwt.InvalidTokenError:
@@ -29,3 +35,15 @@ class JWTAuthentication(BaseAuthentication):
 
         user = User.objects.get(id=payload["user_id"])
         return (user, None)
+
+
+class JWTBearerAuthenticationScheme(OpenApiAuthenticationExtension):
+    target_class = "genaibackend.users.authentication.JWTAuthentication"
+    name = "JWTAuth"
+
+    def get_security_definition(self, generator):
+        return {
+            "type": "http",
+            "scheme": "bearer",
+            "bearerFormat": "JWT",
+        }
