@@ -1,4 +1,5 @@
 from django.db import transaction
+from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
@@ -10,14 +11,11 @@ from rest_framework.views import APIView
 from common.utils import set_default_log
 from genaibackend.users.authentication import JWTAuthentication
 
+from .filters import ConversationFilter, MessageFilter
 from .models import Conversation, Message
-from .serializers import (
-    AddMessageSerializer,
-    ConversationDetailSerializer,
-    ConversationSerializer,
-    MessageSerializer,
-    StartConversationSerializer,
-)
+from .serializers import (AddMessageSerializer, ConversationDetailSerializer,
+                          ConversationSerializer, MessageSerializer,
+                          StartConversationSerializer)
 from .tasks import auto_title, response_ai
 
 logger = set_default_log()
@@ -33,10 +31,16 @@ class ConversationViewSet(viewsets.ModelViewSet):
     serializer_class = ConversationSerializer
     pagination_class = StandardResultsSetPagination
     permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = ConversationFilter
 
     def get_queryset(self):
         user = self.request.user
-        queryset = Conversation.objects.filter(user=user)
+        queryset = (
+            Conversation.objects.filter(user=user)
+            .select_related("user")
+            .prefetch_related("messages")
+        )
 
         search = self.request.query_params.get("search", None)
         if search:
@@ -86,6 +90,8 @@ class MessageViewSet(
 ):
     serializer_class = MessageSerializer
     permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = MessageFilter
 
     def get_queryset(self):
         return Message.objects.filter(conversation__user=self.request.user)
