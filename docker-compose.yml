@@ -23,16 +23,15 @@ services:
     command: /start
 
   postgres:
-    build:
-      context: .
-      dockerfile: ./compose/production/postgres/Dockerfile
-    image: genaibackend_production_postgres
+    image: postgres:15.3-alpine
     container_name: genaibackend_local_postgres
     volumes:
       - genaibackend_local_postgres_data:/var/lib/postgresql/data
       - genaibackend_local_postgres_data_backups:/backups
     env_file:
       - ./.envs/.local/.postgres
+    ports:
+      - '5432:5432'
 
   redis:
     image: docker.io/redis:6
