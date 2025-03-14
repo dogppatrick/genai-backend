@@ -36,7 +36,7 @@ def response_ai(self, message_id: int):
 def auto_title(conversation_id: int):
     ai_model = FakeAImodel()
     con = Conversation.objects.get(id=conversation_id)
-    input_token = Message.objects.filter(conversation=con).first().content
+    input_token = Message.objects.get(conversation=con).content
     new_title = ai_model.create_title(input_token)
     con.title = new_title
     con.save()

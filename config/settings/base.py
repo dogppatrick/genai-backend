@@ -6,6 +6,7 @@ from pathlib import Path
 
 import environ
 import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
 
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 # genaibackend/
@@ -358,6 +359,8 @@ SPECTACULAR_SETTINGS = {
 
 
 sentry_sdk.init(
+    integrations=[DjangoIntegration()],
+    traces_sample_rate=0.5,
     send_default_pii=True,
 )
 
